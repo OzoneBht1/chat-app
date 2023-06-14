@@ -25,14 +25,12 @@ mongoose.connect(process.env.MONGO!).then(() => {
   const server = app.listen(3001,
     () => {
       const io = ServerConfig().init(server)
-      io.on("connection", (socket) => {
+      io.on("connect", (socket) => {
+        console.log("A client connected")
         socketEvents(socket);
       })
     }
   )
 })
-
-
-
 
 
