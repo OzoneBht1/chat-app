@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
-import ServerConfig from "./socket.js";
+import { init } from "./socket.js";
 import morgan from "morgan";
 import socketEvents from "./events.js";
 import User from "./models/User.js";
@@ -61,10 +61,9 @@ console.log(process.env.PING);
 
 mongoose.connect(process.env.MONGO!).then(() => {
   const server = app.listen(8080, () => {
-    const io = ServerConfig().init(server);
+    const io = init(server);
     io.on("connect", (socket) => {
       console.log("A client connected");
-      socketEvents(socket, io);
     });
   });
 });

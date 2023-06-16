@@ -4,7 +4,8 @@ import { MessageType } from "../types/enums/message.js";
 const Message = new Schema(
   {
     msgType: {
-      type: MessageType,
+      type: String,
+      enum: MessageType,
     },
     data: {
       type: String,

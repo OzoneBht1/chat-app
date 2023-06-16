@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
 import { MessageType } from "../types/enums/message.js";
+import { Types } from "mongoose";
 
 export const createChat: RequestHandler = async (req, res, next) => {
   const { userId } = req.params;
@@ -28,7 +29,7 @@ export const createMessage: RequestHandler = async (req, res, next) => {
 
   try {
     const message = new Message({
-      msgType: MessageType.TEXT,
+      msgType: msgType,
       data: data,
       sender: userId,
       receiver: receiverId,
@@ -36,14 +37,19 @@ export const createMessage: RequestHandler = async (req, res, next) => {
 
     const newMessage = await message.save();
     const chat = await Chat.findOne({ user1: userId, user2: receiverId });
+    console.log(chat);
 
     if (!chat) {
       const error: { message?: string; statusCode?: number; data?: any } =
         new Error("Chat not found");
       error.statusCode = 404;
-      return next(error);
+      next(error);
+    } else {
+      console.log(chat.messages);
+      chat.messages.push(newMessage._id);
+      await chat.save();
+      res.status(201).json({ message: "Message created!" });
     }
-    chat.messages.push(newMessage._id);
   } catch (err) {
     console.log(err);
   }

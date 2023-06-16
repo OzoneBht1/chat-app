@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { loginUser } from "../controllers/users.js";
+import { createChat, createMessage } from "../controllers/messages.js";
 
 const router = Router();
 
-router.post("login/", loginUser);
+router.post("/chat/:userId", createChat);
+router.post("/message/:userId", createMessage);
 
 export default router;
