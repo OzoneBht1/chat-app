@@ -1,10 +1,4 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {}
 
-const nextConfig = {
-  reactStrictMode: true,
-};
-
-const nodeExternals = require('webpack-node-externals');
-
-module.exports = {
-  externals: [nodeExternals()],
-};
+module.exports = nextConfig
