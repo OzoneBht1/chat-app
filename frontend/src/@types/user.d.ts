@@ -1,10 +1,16 @@
 export interface IUser {
-  token: string;
+  userId: string;
+}
+
+export interface IToken {
+  access: string;
   expiresIn: string;
 }
 
 export type UserContextType = {
-  user: IUser | null;
-  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
-  setUser: (user: IUser) => void;
+  auth: {
+    user: IUser | null;
+    token: IToken | null;
+  };
+  setAuth: Dispatch<SetStateAction<IAuth>>;
 };

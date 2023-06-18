@@ -1,5 +1,7 @@
 "use client";
 
+import { AuthProvider } from "@/store/use-user";
+
 import Image from "next/image";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
@@ -54,7 +56,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <AuthProvider>
       <form onSubmit={submitHandler}>
         <div className="h-[70vh] w-[100vh] border-2 border-gray-100">
           {messages.map((message) => (
@@ -99,6 +101,6 @@ export default function Home() {
       >
         Leave Room
       </button>
-    </>
+    </AuthProvider>
   );
 }

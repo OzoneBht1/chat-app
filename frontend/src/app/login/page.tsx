@@ -1,12 +1,24 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useContext } from "react";
+import { AuthContext } from "@/store/use-user";
+import jwtDecode from "jwt-decode";
 
 export default function LoginPage() {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { auth, setAuth } = useContext(AuthContext);
+  console.log(setAuth);
+
+  useEffect(() => {
+    if (auth.user) {
+      console.log(auth);
+      router.push("/chat");
+    }
+  }, [auth]);
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -28,28 +40,33 @@ export default function LoginPage() {
 
     if ("token" in data) {
       localStorage.setItem("access", data.token as string);
-      router.push("/chat");
+      setAuth({
+        user: jwtDecode(data.token),
+        token: data.token,
+      });
     }
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <form
-        onSubmit={submitHandler}
-        className="flex flex-col w-full max-w-sm space-y-4"
-      >
-        <input
-          className="text-black"
-          placeholder="Username"
-          ref={usernameRef}
-        />
-        <input
-          className="text-black"
-          placeholder="Password"
-          ref={passwordRef}
-        />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <>
+      <div className="flex items-center justify-center">
+        <form
+          onSubmit={submitHandler}
+          className="flex flex-col w-full max-w-sm space-y-4"
+        >
+          <input
+            className="text-black"
+            placeholder="Username"
+            ref={usernameRef}
+          />
+          <input
+            className="text-black"
+            placeholder="Password"
+            ref={passwordRef}
+          />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </>
   );
 }
