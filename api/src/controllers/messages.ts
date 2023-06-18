@@ -2,24 +2,7 @@ import { RequestHandler } from "express";
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
 import { IError } from "../types/interfaces/error.js";
-
-export const createChat: RequestHandler = async (req, res, next) => {
-  const { userId } = req.params;
-  const { newUserId } = req.body;
-
-  try {
-    const chat = new Chat({
-      user1: userId,
-      user2: newUserId,
-      messages: [],
-    });
-    await chat.save();
-    res.status(201).json({ message: "Chat created!" });
-  } catch (err) {
-    console.log(err);
-    next(err);
-  }
-};
+import { getIO } from "../socket.js";
 
 export const createMessage: RequestHandler = async (req, res, next) => {
   const { userId } = req.params;
@@ -27,12 +10,13 @@ export const createMessage: RequestHandler = async (req, res, next) => {
   const { msgType, data, receiverId } = req.body;
 
   try {
-    const message = new Message({
+    const messageData = {
       msgType: msgType,
       data: data,
       sender: userId,
       receiver: receiverId,
-    });
+    };
+    const message = new Message(messageData);
 
     const chat = await Chat.findOne({
       $or: [
@@ -48,6 +32,10 @@ export const createMessage: RequestHandler = async (req, res, next) => {
       error.statusCode = 404;
       next(error);
     } else {
+      const room = chat._id.toString();
+      getIO().to(room).emit("message", {
+        message: messageData,
+      });
       const newMessage = await message.save();
       chat.messages.push(newMessage._id);
       await chat.save();
@@ -80,7 +68,6 @@ export const getLatestMessage: RequestHandler = async (req, res, next) => {
         options: { sort: { createdAt: -1 } },
       });
     if (!userChats) {
-      console.log("YAHA AIPUGO");
       const error: IError = new Error("No Chats Exist.");
       error.statusCode = 404;
       throw error;
@@ -88,35 +75,5 @@ export const getLatestMessage: RequestHandler = async (req, res, next) => {
     return res.status(200).json({ history: userChats });
   } catch (err) {
     next(err);
-  }
-};
-
-export const getChatHistory: RequestHandler = async (req, res, next) => {
-  const { userId, userId2 } = req.params;
-  if (!userId || !userId2) {
-    throw new Error("The user ids are required");
-  }
-  try {
-    const chat = await Chat.findOne({
-      $or: [
-        { user1: userId, user2: userId2 },
-        { user1: userId2, user2: userId },
-      ],
-    })
-      .skip(0)
-      .limit(4)
-      .sort({ updatedAt: -1 })
-      .populate({
-        path: "messages",
-        select: "msgType sender data",
-        populate: { path: "sender", model: "User", select: "username -_id" },
-      });
-    if (!chat) {
-      const error: IError = new Error("No Chats Exist.");
-      error.statusCode = 404;
-      next(error);
-    }
-  } catch (err) {
-    console.log(err);
   }
 };

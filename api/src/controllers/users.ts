@@ -26,7 +26,7 @@ export const loginUser: RequestHandler = async (req, res, next) => {
   if (!isCorrectPassword) {
     const error: IError = new Error("Invalid Username Or Password");
     error.statusCode = 403;
-    return next(error);
+    next(error);
   }
 
   const token = jwt.sign(

@@ -8,6 +8,7 @@ import User from "./models/User.js";
 import { hashSync } from "bcrypt";
 import userRoutes from "./routes/users.js";
 import messageRoutes from "./routes/messages.js";
+import chatRoutes from "./routes/chats.js";
 import cors from "cors";
 
 const app = express();
@@ -41,7 +42,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/users", userRoutes);
-app.use("/api/chats", messageRoutes);
+app.use("/api/chats", chatRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.use(
   (
