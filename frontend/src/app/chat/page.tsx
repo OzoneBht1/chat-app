@@ -4,11 +4,18 @@ import ChatLeft from "@/components/Chat/ChatLeft";
 import ChatMain from "@/components/Chat/ChatMain";
 
 import { AuthContext, AuthProvider } from "@/store/use-user";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+
+import { socket } from "../socket/socket";
 
 export default function Chat() {
   const { auth } = useContext(AuthContext);
   const [selectedChat, setSelectedChat] = useState<null | string>(null);
+
+  useEffect(() => {
+    socket.emit("balls", "Hi");
+    console.log("EMITTED");
+  }, []);
 
   const changeChatHandler = (chatId: string) => {
     console.log(chatId);

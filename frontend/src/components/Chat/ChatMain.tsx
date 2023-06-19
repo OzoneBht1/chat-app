@@ -1,6 +1,7 @@
-import React, { useContext } from "react";
+import React, { FormEvent, useContext, useRef } from "react";
 import { AuthContext, AuthProvider } from "@/store/use-user";
 import { baseUrl } from "@/@variables/baseurl";
+import { socket } from "@/app/socket/socket";
 
 interface IChatMainProps {
   selectedChat: string | null;
@@ -21,6 +22,7 @@ export const getChat = async (chatId: string) => {
 
 const ChatMain = async ({ selectedChat }: IChatMainProps) => {
   const { auth } = useContext(AuthContext);
+  const inputRef = useRef<HTMLInputElement>(null);
   console.log(selectedChat);
 
   if (!selectedChat) {
@@ -32,23 +34,46 @@ const ChatMain = async ({ selectedChat }: IChatMainProps) => {
   if (!auth.user) {
     return <div className="text-white">loading</div>;
   }
+
+  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const message = inputRef.current?.value;
+    if (!message || message.trim().length < 1) {
+      return;
+    }
+
+    socket.emit("message", "Hi");
+    // socket.emit("send-message", message, selectedChat, auth.user.userId);
+  };
+
   return (
     <div className="flex w-4/5 ">
       <div className="flex flex-1 text-white">
         <div className="flex flex-col w-full gap-5 justify-end">
           {data.chat.messages.map((message: any) => {
             if (message.sender._id === auth.user?.userId) {
-              return <div className="flex justify-end">{message.data}</div>;
+              return (
+                <div className="flex justify-end pr-2">{message.data}</div>
+              );
             } else {
-              return <div className="flex justify-start">{message.data}</div>;
+              return (
+                <div className="flex justify-start pl-2">{message.data}</div>
+              );
             }
           })}
+          <form
+            onSubmit={submitHandler}
+            className="w-full flex border-2 border-red-500 py-1"
+          >
+            <input ref={inputRef} className="flex-1 h-full py-6 text-black" />
+            <button className="w-20 border-2 border-white">Send</button>
+          </form>
         </div>
       </div>
 
-      <div className="w-1/5 border-white border-l-2 text-white">
-        BANANANANANANNANANANANANANANANANANANANAN
-      </div>
+      {/* <div className="w-1/5 border-white border-l-2 text-white"> */}
+      {/*   BANANANANANANNANANANANANANANANANANANANAN */}
+      {/* </div> */}
     </div>
   );
 };
