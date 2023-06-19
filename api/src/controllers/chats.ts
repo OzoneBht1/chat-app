@@ -21,7 +21,6 @@ export const createChat: RequestHandler = async (req, res, next) => {
 };
 
 export const getChatHistory: RequestHandler = async (req, res, next) => {
-  // const { userId, userId2 } = req.params;
   const { chatId } = req.params;
   if (!chatId) {
     const error = new Error("The user ids are required");

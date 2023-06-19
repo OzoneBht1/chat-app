@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import { init } from "./socket.js";
 import morgan from "morgan";
-import socketEvents from "./events.js";
 import User from "./models/User.js";
 import { hashSync } from "bcrypt";
 import userRoutes from "./routes/users.js";
@@ -64,8 +63,5 @@ console.log(process.env.PING);
 mongoose.connect(process.env.MONGO!).then(() => {
   const server = app.listen(8080, () => {
     const io = init(server);
-    io.on("connect", (socket) => {
-      console.log("A client connected");
-    });
   });
 });
