@@ -1,5 +1,7 @@
 import React from "react";
 import classnames from "classnames";
+import { LoginSchemaType } from "../Chat/validations/loginValidation";
+import { UseFormRegister } from "react-hook-form";
 
 interface IInputProps {
   fullWidth?: boolean;
@@ -7,6 +9,7 @@ interface IInputProps {
   error?: boolean;
   type?: string;
   leftIcon?: string;
+  register: any;
 }
 const Input = ({
   fullWidth,
@@ -14,6 +17,7 @@ const Input = ({
   type,
   placeholder,
   leftIcon,
+  register,
   ...rest
 }: IInputProps) => {
   const [focus, setFocus] = React.useState(false);
@@ -23,7 +27,6 @@ const Input = ({
     "border-2 border-gray-200": !error,
     "focus:outline-none focus:border-blue-500": !error && focus,
   });
-  console.log(rest);
 
   return (
     <div className="relative">
@@ -33,6 +36,7 @@ const Input = ({
         type={type}
         placeholder={placeholder}
         className={inputClass}
+        {...register}
         {...rest}
       />
     </div>

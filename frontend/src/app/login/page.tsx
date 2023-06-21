@@ -101,17 +101,17 @@ export default function LoginPage() {
               />
             </div>
             <div className="flex flex-col gap-3">
-              <input
+              <Input
                 placeholder="Username"
-                {...register("username")}
+                register={{ ...register("username") }}
                 type="text"
-                // error={!!errors?.username?.message}
+                error={!!errors?.username?.message}
               />
-              <input
+              <Input
                 placeholder="Password"
                 type="password"
-                {...register("password")}
-                // error={!!errors?.password?.message}
+                register={{ ...register("password") }}
+                error={!!errors?.password?.message}
               />
             </div>
             <button

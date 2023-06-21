@@ -23,4 +23,6 @@ const User = new Schema(
     timestamps: true,
   }
 );
+
+User.methods.
 export default model("User", User);
