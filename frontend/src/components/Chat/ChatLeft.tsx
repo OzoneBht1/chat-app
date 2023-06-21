@@ -8,24 +8,14 @@ import { useContext } from "react";
 import Image from "next/image";
 import { getLastMessagePeriod } from "@/utils/dateUtils";
 
-export const fetchLatestMessages = async (userId: string) => {
-  try {
-    const res = await fetch(`${baseUrl}/messages/message/history/${userId}`);
-    if (!res.ok) {
-      throw new Error("Fetching messages failed");
-    }
-
-    return res.json();
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 interface IChatLeftProps {
   onChange: (chatId: string) => void;
+  data : any;
+
 }
 
-export default async function ChatLeft({ onChange }: IChatLeftProps) {
+
+export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
   const { auth } = useContext(AuthContext);
   console.log(auth);
 
@@ -33,7 +23,6 @@ export default async function ChatLeft({ onChange }: IChatLeftProps) {
     return <div>Error</div>;
   }
 
-  const data = await fetchLatestMessages(auth.user.userId);
   if (!data) {
     return <p>Not Found</p>;
   }

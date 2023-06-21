@@ -33,7 +33,7 @@ export const getChatHistory: RequestHandler = async (req, res, next) => {
       .sort({ updatedAt: -1 })
       .populate({
         path: "messages",
-        select: "msgType sender data",
+        select: "msgType sender receiver data",
         populate: { path: "sender", model: "User", select: "username _id" },
       });
     if (!chat) {

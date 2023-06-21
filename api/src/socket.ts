@@ -28,7 +28,9 @@ const init = (httpServer: HttpServer) => {
   io.on("connect", (clientSocket) => {
     console.log("A client connected");
     socket = clientSocket;
-    registerChatEvents(io, socket);
+    if (io && socket) {
+      registerChatEvents(io, socket);
+    }
   });
 
   return io;
