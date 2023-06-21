@@ -69,6 +69,9 @@ async function ChatMain({ selectedChat }: IChatMainProps) {
       sender: {
         _id: auth?.user?.userId,
       },
+      receiver: {
+        _id: selectedChat,
+      },
     });
   };
 
