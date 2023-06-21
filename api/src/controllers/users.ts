@@ -14,30 +14,35 @@ export const loginUser: RequestHandler = async (req, res, next) => {
     error.statusCode = 400;
     next(error);
   }
-
-  const user = await User.findOne({ username: username });
-  if (!user) {
-    const error: IError = new Error("Invalid Username Or Password");
-    error.statusCode = 403;
-    next(error);
-  }
-
-  const isCorrectPassword = await compare(password, user?.password as string);
-  if (!isCorrectPassword) {
-    const error: IError = new Error("Invalid Username Or Password");
-    error.statusCode = 403;
-    next(error);
-  }
-
-  const token = jwt.sign(
-    {
-      userId: user?.id,
-    },
-    "banana",
-    {
-      expiresIn: "1h",
+  try {
+    const user = await User.findOne({ username: username });
+    console.log(user);
+    if (!user) {
+      const error: IError = new Error("Invalid Username Or Password");
+      error.statusCode = 403;
+      console.log("calling next");
+      throw error;
     }
-  );
 
-  res.status(200).json({ token: token });
+    const isCorrectPassword = await compare(password, user?.password as string);
+    if (!isCorrectPassword) {
+      const error: IError = new Error("Invalid Username Or Password");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user?.id,
+      },
+      "banana",
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.status(200).json({ token: token });
+  } catch (err) {
+    next(err);
+  }
 };

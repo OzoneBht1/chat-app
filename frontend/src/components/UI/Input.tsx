@@ -17,7 +17,7 @@ const Input = ({
   ...rest
 }: IInputProps) => {
   const [focus, setFocus] = React.useState(false);
-  let inputClass = classnames("px-3 py-2 rounded", {
+  let inputClass = classnames("pr-10 pl-5 py-3 rounded", {
     "w-full": fullWidth,
     "border-2 border-red-500": error,
     "border-2 border-gray-200": !error,

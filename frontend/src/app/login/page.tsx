@@ -12,10 +12,49 @@ import {
   LoginSchemaType,
 } from "@/components/Chat/validations/loginValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { useMutation } from "react-query";
+import { login } from "../api/user";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AxiosError } from "axios";
 
 export default function LoginPage() {
   const router = useRouter();
   const { auth, setAuth } = useContext(AuthContext);
+
+  const {
+    mutate: loginUser,
+    isLoading,
+    error,
+  } = useMutation(login, {
+    onSuccess: (data) => {
+      toast("Successfully Logged In. Redirecting...", {
+        type: "success",
+        position: "bottom-right",
+      });
+
+      localStorage.setItem("access", data.token as string);
+      setAuth({
+        user: jwtDecode(data.token),
+        token: data.token,
+      });
+    },
+    onError: (error: Error | AxiosError) => {
+      if (error instanceof AxiosError) {
+        if (!error.response) {
+          toast(error.message, {
+            type: "error",
+            position: "bottom-right",
+          });
+        }
+        toast(error.response?.data.message, {
+          type: "error",
+          position: "bottom-right",
+        });
+      }
+    },
+  });
 
   const {
     register,
@@ -27,62 +66,63 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
+    if (Object.keys(errors).length !== 0) {
+      toast("Please enter proper values", {
+        type: "error",
+        position: "bottom-right",
+      });
+    }
+  }, [errors]);
+
+  useEffect(() => {
     if (auth.user) {
       console.log(auth);
       router.push("/chat");
     }
   }, [auth]);
 
-  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const response = await fetch("http://localhost:8080/api/users/login", {
-      method: "POST",
-      body: JSON.stringify({}),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Login failed");
-    }
-    const data = await response.json();
-    console.log(data);
-
-    if ("token" in data) {
-      localStorage.setItem("access", data.token as string);
-      setAuth({
-        user: jwtDecode(data.token),
-        token: data.token,
-      });
-    }
-  };
-
   const onSubmit: SubmitHandler<LoginSchemaType> = (data) => {
-    console.log(data);
+    console.log("CAlling the next thing");
+    loginUser(data);
   };
-  console.log(errors);
 
   return (
     <>
-      <div className="flex items-center justify-center">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col w-full max-w-sm space-y-4"
-        >
-          <Input
-            placeholder="Username"
-            {...register("username")}
-            type="text"
-            error={!!errors?.username?.message ? true : false}
-          />
-          <Input
-            placeholder="Password"
-            type="password"
-            {...register("password")}
-            error={!!errors?.password?.message ? true : false}
-          />
-          <button type="submit">Login</button>
+      <div className="flex items-center justify-center py-10">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col gap-8">
+            <div className="flex items-center justify-center">
+              <Image
+                src="/vercel.svg"
+                className=""
+                alt=""
+                width={100}
+                height={100}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <input
+                placeholder="Username"
+                {...register("username")}
+                type="text"
+                // error={!!errors?.username?.message}
+              />
+              <input
+                placeholder="Password"
+                type="password"
+                {...register("password")}
+                // error={!!errors?.password?.message}
+              />
+            </div>
+            <button
+              className="bg-blue-500 text-white px-6 py-2 rounded"
+              type="submit"
+            >
+              Login
+            </button>
+          </div>
         </form>
+        <ToastContainer />
       </div>
     </>
   );
