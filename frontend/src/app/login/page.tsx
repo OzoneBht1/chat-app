@@ -18,6 +18,7 @@ import { login } from "../api/user";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError } from "axios";
+import Spinner from "@/components/UI/Spinner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -118,7 +119,10 @@ export default function LoginPage() {
               className="bg-blue-500 text-white px-6 py-2 rounded"
               type="submit"
             >
-              Login
+              <div className="flex items-center justify-center gap-3">
+                Login
+                {isLoading && <Spinner height={7} width={7} />}
+              </div>
             </button>
           </div>
         </form>
