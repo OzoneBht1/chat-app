@@ -55,7 +55,7 @@ export default async function Chat() {
   };
 
   return (
-    <div className="flex h-[95vh] mt-3">
+    <div className="flex mt-16">
       {data && <ChatLeft onChange={changeChatHandler} data={data} />}
       <ChatMain selectedChat={selectedChat} />
     </div>

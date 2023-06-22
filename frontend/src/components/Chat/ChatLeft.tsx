@@ -10,10 +10,8 @@ import { getLastMessagePeriod } from "@/utils/dateUtils";
 
 interface IChatLeftProps {
   onChange: (chatId: string) => void;
-  data : any;
-
+  data: any;
 }
-
 
 export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
   const { auth } = useContext(AuthContext);
@@ -32,7 +30,7 @@ export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
   };
 
   return (
-    <div className="flex w-1/5 border-white border-2 p-6 text-white ">
+    <div className="flex w-1/5 border-white border-2 text-white bg-gray-300">
       <div className="flex flex-col w-full gap-5">
         <div className="flex justify-between">
           <h1 className="font-bold text-2xl">Chats</h1>
