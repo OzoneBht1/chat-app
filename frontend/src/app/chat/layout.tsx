@@ -4,13 +4,30 @@ import { AuthContext, AuthProvider } from "@/store/use-user";
 import jwtDecode from "jwt-decode";
 import React, { useContext } from "react";
 import Image from "next/image";
+import { useQuery } from "react-query";
+import { getUser } from "../api/user";
 
 const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   const { auth } = useContext(AuthContext);
 
-  // User is {auth.user?.userId}
+  const { data, isLoading, isError } = useQuery(
+    ["getUser"],
+    async () => await getUser(auth.user?.userId as string),
+    {
+      enabled: !!auth.user?.userId,
+      refetchOnWindowFocus: false,
+    }
+  );
 
-  console.log(auth.user, "In layout of chat");
+  if (isLoading) {
+    return <div className="text-white">loading</div>;
+  }
+  if (isError) {
+    return <div className="text-white">error</div>;
+  }
+
+  console.log(data);
+
   return (
     <>
       <div className="sticky flex items-center justify-end pr-10 top-0 left-0 h-16 bg-gray-200 text-red">
@@ -28,7 +45,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
 
           <div className="flex-flex-col items-start">
-            <h6>{auth.user?.userId}</h6>
+            <h6>{data?.user?.username}</h6>
             <p className="text-blue-500">Level 10 wizard</p>
           </div>
         </div>

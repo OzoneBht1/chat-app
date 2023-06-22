@@ -14,3 +14,7 @@ export type UserContextType = {
   };
   setAuth: Dispatch<SetStateAction<IAuth>>;
 };
+export interface User {
+  _id: string;
+  username: string;
+}

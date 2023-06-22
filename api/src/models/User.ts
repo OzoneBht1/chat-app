@@ -24,5 +24,4 @@ const User = new Schema(
   }
 );
 
-User.methods.
 export default model("User", User);

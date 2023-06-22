@@ -46,3 +46,23 @@ export const loginUser: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
+
+export const getUser: RequestHandler = async (req, res, next) => {
+  const { userId } = req.params;
+  if (!userId) {
+    const error: IError = new Error("No user id provided");
+    error.statusCode = 400;
+    throw error;
+  }
+  try {
+    const user = await User.findOne({ _id: userId }).select("-password");
+    if (!user) {
+      const error: IError = new Error("No user found");
+      error.statusCode = 404;
+      throw error;
+    }
+    res.status(200).json({ user: user });
+  } catch (err) {
+    next(err);
+  }
+};
