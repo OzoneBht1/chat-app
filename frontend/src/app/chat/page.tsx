@@ -2,7 +2,7 @@
 import ChatLeft from "@/components/Chat/ChatLeft";
 import ChatMain from "@/components/Chat/ChatMain";
 
-import { AuthContext, AuthProvider } from "@/store/use-user";
+import { AuthContext } from "@/store/use-user";
 
 import { socket } from "../socket/socket";
 import { useContext, useEffect, useState } from "react";

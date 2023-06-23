@@ -1,4 +1,3 @@
-import { baseUrl } from "@/@variables/baseurl";
 import api from "./api";
 
 export const getChat = async (chatId: string) => {

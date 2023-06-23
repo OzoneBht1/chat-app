@@ -1,4 +1,4 @@
-import { ISvgProps } from "@/@types/icon";
+import { ISvgProps } from "@/types/icon";
 import React from "react";
 
 const SearchIcon = (props: ISvgProps) => {

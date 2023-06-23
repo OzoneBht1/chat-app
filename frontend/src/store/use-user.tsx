@@ -1,20 +1,10 @@
 "use client";
-import { IToken, IUser, UserContextType } from "@/@types/user";
-import {
-  useContext,
-  Dispatch,
-  useState,
-  createContext,
-  SetStateAction,
-} from "react";
+import { IAuth, UserContextType } from "@/types/user";
+import { useState, createContext } from "react";
 
-type IAuth = {
-  user: IUser | null;
-  token: IToken | null;
-};
 export const AuthContext = createContext<UserContextType>({
   auth: { user: null, token: null },
-  setAuth: (user: IUser, token: IToken) => {},
+  setAuth: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {

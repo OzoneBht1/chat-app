@@ -1,8 +1,6 @@
 "use client";
 
-import { baseUrl } from "@/@variables/baseurl";
 import Icon from "../Icons/Icon";
-import ChatIcon from "../Icons/Svgs/ChatIcon";
 import { AuthContext } from "@/store/use-user";
 import { useContext } from "react";
 import Image from "next/image";

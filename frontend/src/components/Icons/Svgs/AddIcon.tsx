@@ -1,5 +1,5 @@
 import React from "react";
-import { ISvgProps } from "@/@types/icon";
+import { ISvgProps } from "@/types/icon";
 
 const AddIcon = (props: ISvgProps) => {
   return (

@@ -1,7 +1,6 @@
 "use client";
 
-import { AuthContext, AuthProvider } from "@/store/use-user";
-import jwtDecode from "jwt-decode";
+import { AuthContext } from "@/store/use-user";
 import React, { useContext } from "react";
 import Image from "next/image";
 import { useQuery } from "react-query";

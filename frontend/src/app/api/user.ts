@@ -1,6 +1,5 @@
-import { LoginSchemaType } from "@/components/Chat/validations/loginValidation";
 import api from "./api";
-import { User } from "@/@types/user";
+import { User } from "@/types/user";
 
 export const login = async (data: {
   username: string;
