@@ -3,51 +3,48 @@ import ChatLeft from "@/components/Chat/ChatLeft";
 import ChatMain from "@/components/Chat/ChatMain";
 
 import { AuthContext, AuthProvider } from "@/store/use-user";
-// import { useContext, useEffect, useState } from "react";
 
 import { socket } from "../socket/socket";
-import { baseUrl } from "@/@variables/baseurl";
-import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
+import { useQuery } from "react-query";
+import { getLatestMessages } from "../api/chat";
 
-async function getLatestMessages(userId: string) {
-  try {
-    const res = await fetch(`${baseUrl}/messages/message/history/${userId}`, {
-      cache: "force-cache",
-    });
-
-    return res.json();
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-let data: any;
+let latestMessages: any;
 export default async function Chat() {
   const [selectedChat, setSelectedChat] = useState<null | string>(null);
 
   const { auth } = useContext(AuthContext);
 
+  const {
+    data: latestMessages,
+    isLoading: latestMessagesIsLoading,
+    isError: latestMessagesIsError,
+  } = useQuery(
+    ["latest-message"],
+    () => getLatestMessages(auth?.user?.userId as string),
+    {
+      refetchOnWindowFocus: false,
+      enabled: auth?.user?.userId !== undefined,
+    }
+  );
+
   useEffect(() => {
-    if (data) {
-      console.log(data);
+    if (latestMessages) {
+      console.log(latestMessages);
       let rooms: string[] = [];
-      data.history.map((chat: any) => {
+      latestMessages.history.map((chat: any) => {
         rooms.push(chat._id);
       });
 
       socket.emit("join-room", rooms);
     }
-  }, [data]);
+  }, [latestMessages]);
 
   if (!auth.user || !auth.user.userId) {
     return <p>Not found</p>;
   }
 
-  data = await getLatestMessages(auth.user?.userId);
-
-  console.log(data);
+  console.log(latestMessages);
 
   const changeChatHandler = (chatId: string) => {
     console.log(chatId);
@@ -55,8 +52,10 @@ export default async function Chat() {
   };
 
   return (
-    <div className="flex mt-16">
-      {data && <ChatLeft onChange={changeChatHandler} data={data} />}
+    <div className="flex h-[calc(100vh-64px)]">
+      {latestMessages && (
+        <ChatLeft onChange={changeChatHandler} data={latestMessages} />
+      )}
       <ChatMain selectedChat={selectedChat} />
     </div>
   );
