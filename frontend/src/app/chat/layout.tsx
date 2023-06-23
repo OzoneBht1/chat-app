@@ -30,7 +30,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <div className="sticky flex items-center justify-end pr-10 top-0 left-0 h-16 bg-gray-200 text-red">
+      <div className="sticky flex items-center justify-end pr-10 top-0 left-0 h-16 shadow-lg">
         <div className="flex items-start gap-2">
           <div className="relative">
             <Image

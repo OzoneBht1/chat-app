@@ -7,6 +7,9 @@ import { AuthContext } from "@/store/use-user";
 import { useContext } from "react";
 import Image from "next/image";
 import { getLastMessagePeriod } from "@/utils/dateUtils";
+import IconGroup from "../Icons/IconGroup";
+import AddIcon from "../Icons/Svgs/AddIcon";
+import SearchIcon from "../Icons/Svgs/SearchIcon";
 
 interface IChatLeftProps {
   onChange: (chatId: string) => void;
@@ -30,36 +33,49 @@ export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
   };
 
   return (
-    <div className="flex w-1/5 border-white border-2 text-white bg-gray-300">
+    <div className="flex w-1/5 border-r-2 border-gray-200">
       <div className="flex flex-col w-full gap-5">
-        <div className="flex justify-between">
-          <h1 className="font-bold text-2xl">Chats</h1>
-          <Icon>
-            <ChatIcon width="100%" height="100%" fill="white" />
-          </Icon>
+        <div className="px-2 py-4 border-b-2 border-gray-200">
+          <div className="flex justify-between items-center">
+            <h1 className="font-semibold text-3xl text-blue-500 rounded-md">
+              Messages
+            </h1>
+            <IconGroup>
+              <Icon>
+                <AddIcon className="fill-none stroke-gray-500 stroke-2 w-6 h-6" />
+              </Icon>
+              <Icon>
+                <SearchIcon className="fill-none stroke-gray-500 stroke-2 h-6 w-6" />
+              </Icon>
+            </IconGroup>
+          </div>
         </div>
         {data &&
           data.history.map((message: any) => {
             return (
               <div
-                className="border-2 gap-2 border-y-white flex w-full p-2"
+                className="border-2 gap-5 border-y-white flex w-full p-2 items-center"
                 onClick={() => handleChatSwitch(message._id)}
               >
                 <Image
-                  src="/next.svg"
+                  src="/14.png"
                   alt="user-image"
-                  width="30"
-                  height="40"
-                  className="rounded border-2 border-red"
+                  width={40}
+                  height={40}
+                  className="w-12 h-12 rounded-full"
                 />
-                <div className="flex flex-col items-start">
-                  <div className="flex justify-between items-center text-center w-full pr-4">
-                    <p className="text-lg font-bold">
+                <div className="flex flex-col w-full">
+                  <div className="flex justify-between items-center w-full pr-4">
+                    <p className="text-lg font-semibold">
                       {message.messages[0].sender.username}
                     </p>
-                    <p>{getLastMessagePeriod(message.updatedAt)} </p>
+                    <p className="text-sm text-gray-600">
+                      {getLastMessagePeriod(message.updatedAt)}
+                    </p>
                   </div>
-                  <p className="text-">{message.messages[0].data}</p>
+                  <p className="text-gray-700 text-md">
+                    {message.messages[0].data}
+                  </p>
                 </div>
               </div>
             );
