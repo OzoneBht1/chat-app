@@ -1,30 +1,30 @@
+import classNames from "classnames";
 import React from "react";
 
 interface IconProps {
   height?: number;
   width?: number;
-  color?: string;
-  stroke?: string;
+  bgColor?: string;
   children: React.ReactNode;
 }
 
 const Icon = ({
-  height = 40,
-  width = 40,
-  color,
-  stroke,
+  height = 12,
+  width = 12,
+  bgColor = "bg-gray-200",
   children,
   ...rest
 }: IconProps) => {
+  const className = classNames(
+    "flex items-center justify-center p-2 border-2 rounded-full",
+    {
+      [`h-${height}`]: height,
+      [`w-${width}`]: width,
+      [`${bgColor}`]: bgColor,
+    }
+  );
   return (
-    <div
-      style={{
-        height: height,
-        width: width,
-      }}
-      className={"${color && stroke ? `text-${color}-${stroke}` : "}
-      {...rest}
-    >
+    <div {...rest} className={className}>
       {children}
     </div>
   );
