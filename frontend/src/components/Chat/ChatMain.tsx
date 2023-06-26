@@ -162,34 +162,6 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
           </div>
         </div>
       </div>
-      {/*   {messages.map((message: any) => { */}
-
-      {/*     if (message.sender._id === auth.user?.userId) { */}
-      {/*       return ( */}
-      {/*         <div key={message._id} className="flex justify-end pr-2"> */}
-      {/*           {message.data} */}
-      {/*         </div> */}
-      {/*       ); */}
-      {/*     } else { */}
-      {/*       return ( */}
-      {/*         <div key={message._id} className="flex justify-start pl-2"> */}
-      {/*           {message.data} */}
-      {/*         </div> */}
-      {/*       ); */}
-      {/*     } */}
-      {/*   })} */}
-      {/*   <form */}
-      {/*     onSubmit={submitHandler} */}
-      {/*     className="w-full flex border-2 border-red-500 py-1" */}
-      {/*   > */}
-      {/*     <input ref={inputRef} className="flex-1 h-full py-6 text-black" /> */}
-      {/*     <button className="w-20 border-2 border-white">Send</button> */}
-      {/*   </form> */}
-      {/* </div> */}
-
-      {/* <div className="w-1/5 border-white border-l-2 text-white"> */}
-      {/*   BANANANANANANNANANANANANANANANANANANANAN */}
-      {/* </div> */}
     </div>
   );
 }

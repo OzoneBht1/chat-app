@@ -2,12 +2,13 @@
 
 import Icon from "../Icons/Icon";
 import { AuthContext } from "@/store/use-user";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Image from "next/image";
 import { getLastMessagePeriod } from "@/utils/dateUtils";
 import IconGroup from "../Icons/IconGroup";
 import AddIcon from "../Icons/Svgs/AddIcon";
 import SearchIcon from "../Icons/Svgs/SearchIcon";
+import socket from "@/socket";
 
 interface IChatLeftProps {
   onChange: (chatId: string) => void;
@@ -25,6 +26,16 @@ export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
   if (!data) {
     return <p>Not Found</p>;
   }
+
+  useEffect(() => {
+    let rooms: string[] = [];
+    console.log(data);
+    data.history.map((chat: any) => {
+      rooms.push(chat._id);
+    });
+
+    socket.emit("get-connected-users", rooms);
+  }, [data]);
 
   const handleChatSwitch = (messageId: string) => {
     onChange(messageId);
