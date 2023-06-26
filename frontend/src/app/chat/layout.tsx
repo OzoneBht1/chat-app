@@ -19,10 +19,10 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
   );
 
   if (isLoading) {
-    return <div className="text-white">loading</div>;
+    return <div className="">loading</div>;
   }
   if (isError) {
-    return <div className="text-white">error</div>;
+    return <div className="">error</div>;
   }
 
   console.log(data);

@@ -52,7 +52,7 @@ export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
           data.history.map((message: any) => {
             return (
               <div
-                className="border-2 gap-5 border-y-white flex w-full p-2 items-center"
+                className="gap-5 flex w-full p-2 items-center"
                 onClick={() => handleChatSwitch(message._id)}
               >
                 <Image
@@ -63,7 +63,7 @@ export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
                   className="w-12 h-12 rounded-full"
                 />
                 <div className="flex flex-col w-full">
-                  <div className="flex justify-between items-center w-full pr-4">
+                  <div className="flex justify-between items-center w-full ">
                     <p className="text-lg font-semibold">
                       {message.messages[0].sender.username}
                     </p>
