@@ -12,8 +12,7 @@ const User = new Schema(
       length: { min: 5 },
     },
     name: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
     },
     image: {
       type: Buffer,

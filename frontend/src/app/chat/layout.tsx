@@ -25,7 +25,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
     return <div className="">error</div>;
   }
 
-  console.log(data);
+  console.log(data?.user.image.toString());
 
   return (
     <>
@@ -34,7 +34,7 @@ const ChatLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="relative">
             <Image
               className="w-11 h-11 rounded-full"
-              src="/14.png"
+              src={"/14.png"}
               alt="user-image"
               height={60}
               width={60}

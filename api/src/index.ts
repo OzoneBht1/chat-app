@@ -9,6 +9,8 @@ import userRoutes from "./routes/users.js";
 import messageRoutes from "./routes/messages.js";
 import chatRoutes from "./routes/chats.js";
 import cors from "cors";
+// import multer from "multer";
+import { faker } from "@faker-js/faker";
 
 const app = express();
 
@@ -17,6 +19,8 @@ const app = express();
 //     const user = new User({
 //       username: `User${i}`,
 //       password: hashSync("password", 12),
+//       name: faker.person.fullName(),
+//       image: faker.image.avatar(),
 //     });
 //     await user.save();
 //   }
@@ -24,6 +28,7 @@ const app = express();
 // });
 
 app.use(express.json());
+// app.use(multer({}).single("profilePicture"));
 
 app.use(cors());
 
