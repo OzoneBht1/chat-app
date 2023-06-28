@@ -1,7 +1,8 @@
-import { INewMessage } from "@/types/message";
+import { IMessage, INewMessage } from "@/types/message";
 import api from "./api";
+import { IChat } from "@/types/chat";
 
-export const getChat = async (chatId: string) => {
+export const getChat = async (chatId: string): Promise<{ chat: IChat }> => {
   const response = await api.get(`/chats/chat/${chatId}`);
   return response.data;
 };

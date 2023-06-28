@@ -64,7 +64,7 @@ export const getLatestMessage: RequestHandler = async (req, res, next) => {
         path: "messages",
         select: "msgType sender data",
         perDocumentLimit: 1,
-        populate: { path: "sender", model: "User", select: "username -_id" },
+        populate: { path: "sender", model: "User", select: "username" },
         options: { sort: { createdAt: -1 } },
       });
     if (!userChats) {

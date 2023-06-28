@@ -34,7 +34,11 @@ export const getChatHistory: RequestHandler = async (req, res, next) => {
       .populate({
         path: "messages",
         select: "msgType sender receiver data",
-        populate: { path: "sender", model: "User", select: "username _id" },
+        populate: {
+          path: "sender receiver",
+          model: "User",
+          select: "username _id",
+        },
       });
     if (!chat) {
       const error: IError = new Error("No Chats Exist.");

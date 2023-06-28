@@ -8,6 +8,7 @@ import { socket } from "../socket/socket";
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { getLatestMessages } from "../api/chat";
+import { ChatLatestMessage } from "@/types/chat";
 
 let latestMessages: any;
 export default async function Chat() {
@@ -19,7 +20,7 @@ export default async function Chat() {
     data: latestMessages,
     isLoading: latestMessagesIsLoading,
     isError: latestMessagesIsError,
-  } = useQuery(
+  } = useQuery<{ history: ChatLatestMessage[] }>(
     ["latest-message"],
     () => getLatestMessages(auth?.user?.userId as string),
     {

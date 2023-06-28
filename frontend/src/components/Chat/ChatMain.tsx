@@ -15,6 +15,7 @@ import Image from "next/image";
 import { MessageType } from "@/types/message";
 import Icon from "../Icons/Icon";
 import CheckMark from "../Icons/Svgs/CheckmarkIcon";
+import { IChat } from "@/types/chat";
 
 interface IChatMainProps {
   selectedChat: string | null;
@@ -27,7 +28,11 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
   const [messages, setMessages] = useState<any[]>([]);
   console.log(selectedChat);
 
-  const { data: chatData } = useQuery(
+  const {
+    data: chatData,
+    isLoading: chatDataIsLoading,
+    isError: chatDataIsError,
+  } = useQuery<{ chat: IChat }>(
     ["getChat"],
     () => getChat(selectedChat as string),
     {
@@ -66,6 +71,13 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
     return <div className="">loading</div>;
   }
 
+  if (chatDataIsLoading) {
+    return <div className="">loading</div>;
+  }
+  if (chatDataIsError) {
+    return <div className="">error</div>;
+  }
+
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const message = inputRef.current?.value;
@@ -93,8 +105,8 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
       data: message,
       receiverId:
         auth?.user?.userId === chatData?.chat.user1
-          ? chatData.chat.user2
-          : chatData.chat.user1,
+          ? chatData!.chat.user2
+          : chatData!.chat.user1,
     });
   };
 
@@ -111,7 +123,7 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
                 height={40}
                 className="w-12 h-12 rounded-full"
               />
-              <p className="text-2xl font-medium">User4444</p>
+              <p className="text-2xl font-medium">{chatData?.chat.user2}</p>
             </div>
 
             <div className="flex gap-5 items-center">
@@ -141,12 +153,12 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
                           {idx === messages.length - 1 ? (
                             <div className="flex gap-2 items-center">
                               {isLoading && (
-                                <Icon>
+                                <Icon bgColor="none">
                                   <CheckMark className="fill-none stroke-gray-500 stroke-2 w-6 h-6" />
                                 </Icon>
                               )}
                               {isSuccess && (
-                                <Icon>
+                                <Icon bgColor="none">
                                   <CheckMark className="fill-none stroke-green-500 stroke-2 w-6 h-6" />
                                 </Icon>
                               )}
@@ -179,7 +191,7 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
                       <div className="flex flex-col items-start gap-2">
                         <div className="flex flex-row-reverse gap-2">
                           <p className="text-gray-400">5 bajyo</p>
-                          <h6>You</h6>
+                          <h6></h6>
                         </div>
                         <div className="bg-blue-600 text-white px-3 py-2 rounded-r-lg rounded-b-lg max-w-md">
                           {message.data}
