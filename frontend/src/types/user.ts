@@ -19,6 +19,8 @@ export type UserContextType = {
 export interface User {
   _id: string;
   username: string;
+  name: string;
+  image: File;
 }
 
 export interface IAuth {
