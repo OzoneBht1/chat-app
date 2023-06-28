@@ -125,7 +125,7 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
             </div>
           </div>
         </div>
-        <div className="flex-grow overflow-y-auto">
+        <div className="flex-grow overflow-y-auto no-scrollbar">
           <div className="flex flex-col gap-5 w-full justify-end px-6 py-3">
             {messages.map((message: any, idx) => {
               if (message.sender._id === auth.user?.userId) {
