@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import { init } from "./socket.js";
 import morgan from "morgan";
-import User from "./models/User.js";
 import { hashSync } from "bcrypt";
 import userRoutes from "./routes/users.js";
 import messageRoutes from "./routes/messages.js";
@@ -11,18 +10,21 @@ import chatRoutes from "./routes/chats.js";
 import cors from "cors";
 // import multer from "multer";
 import { faker } from "@faker-js/faker";
-
+import { PrismaClient } from "@prisma/client";
 const app = express();
+
+export const prisma = new PrismaClient();
 
 // app.use("/", async (req, res, next) => {
 //   for (let i = 0; i < 20; i++) {
-//     const user = new User({
-//       username: `User${i}`,
-//       password: hashSync("password", 12),
-//       name: faker.person.fullName(),
-//       image: faker.image.avatar(),
+//     await prisma.user.create({
+//       data: {
+//         username: `User${i}`,
+//         password: hashSync("password", 12),
+//         name: faker.person.fullName(),
+//         image: "",
+//       },
 //     });
-//     await user.save();
 //   }
 //   console.log("Created 20 users");
 // });
