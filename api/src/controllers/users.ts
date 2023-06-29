@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import { IError } from "../types/interfaces/error.js";
-import User from "../models/User.js";
 import { compare, hash } from "bcrypt";
 import jwt from "jsonwebtoken";
+import { prisma } from "../index.js";
 
 export const loginUser: RequestHandler = async (req, res, next) => {
   console.log(req.body.username);
@@ -15,7 +15,11 @@ export const loginUser: RequestHandler = async (req, res, next) => {
     next(error);
   }
   try {
-    const user = await User.findOne({ username: username });
+    const user = await prisma.user.findUnique({
+      where: {
+        username: username,
+      },
+    });
     console.log(user);
     if (!user) {
       const error: IError = new Error("Invalid Username Or Password");
@@ -55,14 +59,27 @@ export const getUser: RequestHandler = async (req, res, next) => {
     throw error;
   }
   try {
-    const user = await User.findOne({ _id: userId }).select("-password");
+    const user = await prisma.user.findUnique({
+      where: {
+        id: parseInt(userId),
+      },
+    });
     if (!user) {
       const error: IError = new Error("No user found");
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ user: user });
+    const userWithoutPassword = exclude(user, ["password"]);
+    res.status(200).json({ user: userWithoutPassword });
   } catch (err) {
     next(err);
   }
 };
+
+function exclude<User, Key extends keyof User>(user: User, keys: Key[]) {
+  return Object.fromEntries(
+    Object.entries(user as keyof User).filter(
+      ([key]) => !keys.includes(key as any)
+    )
+  );
+}

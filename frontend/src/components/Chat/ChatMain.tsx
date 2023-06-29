@@ -12,7 +12,7 @@ import { socket } from "@/app/socket/socket";
 import { useMutation, useQuery } from "react-query";
 import { createMessage, getChat } from "@/app/api/chat";
 import Image from "next/image";
-import { MessageType } from "@/types/message";
+import { IMessage, INewMessage, MessageType } from "@/types/message";
 import Icon from "../Icons/Icon";
 import CheckMark from "../Icons/Svgs/CheckmarkIcon";
 import { IChat } from "@/types/chat";
@@ -54,7 +54,7 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
   } = useMutation(createMessage);
 
   useEffect(() => {
-    socket.on("receive-message", (newMessage: any) => {
+    socket.on("receive-message", (newMessage: IMessage) => {
       console.log(newMessage);
       console.log(messages);
       setMessages((prev) => [...prev, newMessage]);
@@ -139,7 +139,7 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
         </div>
         <div className="flex-grow overflow-y-auto no-scrollbar">
           <div className="flex flex-col gap-5 w-full justify-end px-6 py-3">
-            {messages.map((message: any, idx) => {
+            {messages.map((message, idx) => {
               if (message.sender._id === auth.user?.userId) {
                 return (
                   <>
@@ -191,7 +191,7 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
                       <div className="flex flex-col items-start gap-2">
                         <div className="flex flex-row-reverse gap-2">
                           <p className="text-gray-400">5 bajyo</p>
-                          <h6></h6>
+                          <h6>{}</h6>
                         </div>
                         <div className="bg-blue-600 text-white px-3 py-2 rounded-r-lg rounded-b-lg max-w-md">
                           {message.data}

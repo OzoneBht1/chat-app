@@ -1,18 +1,20 @@
 import { RequestHandler } from "express";
-import Chat from "../models/Chat.js";
 import { IError } from "../types/interfaces/error.js";
+import { prisma } from "../index.js";
 
 export const createChat: RequestHandler = async (req, res, next) => {
   const { userId } = req.params;
   const { newUserId } = req.body;
 
   try {
-    const chat = new Chat({
-      user1: userId,
-      user2: newUserId,
-      messages: [],
+    await prisma.chat.create({
+      data: {
+        users: {
+          connect: [{ id: Number(userId) }, { id: Number(newUserId) }],
+        },
+      },
     });
-    await chat.save();
+
     res.status(201).json({ message: "Chat created!" });
   } catch (err) {
     console.log(err);
@@ -27,19 +29,28 @@ export const getChatHistory: RequestHandler = async (req, res, next) => {
     next(error);
   }
   try {
-    const chat = await Chat.findOne({
-      _id: chatId,
-    })
-      .sort({ updatedAt: -1 })
-      .populate({
-        path: "messages",
-        select: "msgType sender receiver data",
-        populate: {
-          path: "sender receiver",
-          model: "User",
-          select: "username _id",
+    const chat = await prisma.chat.findUnique({
+      where: {
+        id: parseInt(chatId),
+      },
+      include: {
+        users: {
+          select: {
+            id: true,
+          },
         },
-      });
+      },
+    });
+    // .sort({ updatedAt: -1 })
+    // .populate({
+    //   path: "messages",
+    //   select: "msgType sender receiver data",
+    //   populate: {
+    //     path: "sender receiver",
+    //     model: "User",
+    //     select: "username _id",
+    //   },
+    // });
     if (!chat) {
       const error: IError = new Error("No Chats Exist.");
       error.statusCode = 404;
