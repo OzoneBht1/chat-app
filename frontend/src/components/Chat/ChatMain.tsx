@@ -18,30 +18,32 @@ import CheckMark from "../Icons/Svgs/CheckmarkIcon";
 import { IChat } from "@/types/chat";
 
 interface IChatMainProps {
-  selectedChat: string | null;
+  selectedChat: number | null;
 }
 
 export default function ChatMain({ selectedChat }: IChatMainProps) {
   const { auth } = useContext(AuthContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   console.log(selectedChat);
 
   const {
     data: chatData,
     isLoading: chatDataIsLoading,
     isError: chatDataIsError,
-  } = useQuery<{ chat: IChat }>(
+  } = useQuery<IChat>(
     ["getChat"],
-    () => getChat(selectedChat as string),
+    () => getChat(selectedChat as number),
     {
       enabled: !!selectedChat,
       refetchOnWindowFocus: false,
-      onSettled: (data: any, error: unknown) => {
+      onSettled: (data , error: unknown) => {
         console.log(data);
         console.log("Calling Set Messages");
-        setMessages(data.chat.messages);
+        if (data){
+        setMessages(data.messages);
+        }
       },
     }
   );
@@ -99,14 +101,15 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
       },
     });
 
+      const receiverUser = chatData?.users.find((user)=>user.id !== auth?.user?.userId)
+    if (!receiverUser){
+      throw new Error();
+    }
     sendMessage({
-      userId: auth!.user!.userId!,
+      userId: auth!.user!.userId,
       msgType: MessageType.TEXT,
       data: message,
-      receiverId:
-        auth?.user?.userId === chatData?.chat.user1
-          ? chatData!.chat.user2
-          : chatData!.chat.user1,
+      receiverId : receiverUser?.id 
     });
   };
 
@@ -123,7 +126,7 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
                 height={40}
                 className="w-12 h-12 rounded-full"
               />
-              <p className="text-2xl font-medium">{chatData?.chat.user2}</p>
+              <p className="text-2xl font-medium">{chatData?.users[0].name}</p>
             </div>
 
             <div className="flex gap-5 items-center">
@@ -140,10 +143,10 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
         <div className="flex-grow overflow-y-auto no-scrollbar">
           <div className="flex flex-col gap-5 w-full justify-end px-6 py-3">
             {messages.map((message, idx) => {
-              if (message.sender._id === auth.user?.userId) {
+              if (message.sender.id=== auth.user?.userId) {
                 return (
                   <>
-                    <div key={message._id} className="flex justify-end pr-2">
+                    <div key={message.id} className="flex justify-end pr-2">
                       <div className="flex gap-2">
                         <div className="flex flex-col items-end gap-2">
                           <div className="flex gap-2">
@@ -186,12 +189,12 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
                 );
               } else {
                 return (
-                  <div key={message._id} className="flex justify-start pl-2">
+                  <div key={message.id} className="flex justify-start pl-2">
                     <div className="flex flex-row-reverse gap-2">
                       <div className="flex flex-col items-start gap-2">
                         <div className="flex flex-row-reverse gap-2">
                           <p className="text-gray-400">5 bajyo</p>
-                          <h6>{}</h6>
+                          <h6>{message.sender.username}</h6>
                         </div>
                         <div className="bg-blue-600 text-white px-3 py-2 rounded-r-lg rounded-b-lg max-w-md">
                           {message.data}

@@ -9,10 +9,11 @@ import IconGroup from "../Icons/IconGroup";
 import AddIcon from "../Icons/Svgs/AddIcon";
 import SearchIcon from "../Icons/Svgs/SearchIcon";
 import socket from "@/socket";
+import { IChatLatestMessage } from "@/types/chat";
 
 interface IChatLeftProps {
-  onChange: (chatId: string) => void;
-  data: any;
+  onChange: (chatId: number) => void;
+  data: IChatLatestMessage[];
 }
 
 export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
@@ -30,14 +31,14 @@ export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
   useEffect(() => {
     let rooms: string[] = [];
     console.log(data);
-    data.history.map((chat: any) => {
-      rooms.push(chat._id);
+    data.map((chat) => {
+      rooms.push(chat.id.toString());
     });
 
     socket.emit("get-connected-users", rooms);
   }, [data]);
 
-  const handleChatSwitch = (messageId: string) => {
+  const handleChatSwitch = (messageId: number) => {
     onChange(messageId);
   };
 
@@ -60,11 +61,11 @@ export default async function ChatLeft({ onChange, data }: IChatLeftProps) {
           </div>
         </div>
         {data &&
-          data.history.map((message: any) => {
+          data.map((message) => {
             return (
               <div
                 className="gap-5 flex w-full p-2 items-center"
-                onClick={() => handleChatSwitch(message._id)}
+                onClick={() => handleChatSwitch(message.id)}
               >
                 <Image
                   src="/14.png"
