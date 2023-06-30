@@ -101,6 +101,14 @@ export const getLatestMessage: RequestHandler = async (req, res, next) => {
       },
 
       include: {
+        users: {
+          select: {
+            id: true,
+            username: true,
+            image: true,
+            name: true,
+          },
+        },
         messages: {
           take: 1,
           orderBy: {
@@ -130,7 +138,7 @@ export const getLatestMessage: RequestHandler = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    return res.status(200).json({ history: chats });
+    return res.status(200).json(chats);
   } catch (err) {
     next(err);
   }

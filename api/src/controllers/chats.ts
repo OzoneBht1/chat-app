@@ -34,6 +34,7 @@ export const getChatHistory: RequestHandler = async (req, res, next) => {
         id: parseInt(chatId),
       },
       select: {
+        id: true,
         users: {
           select: {
             id: true,
@@ -46,26 +47,35 @@ export const getChatHistory: RequestHandler = async (req, res, next) => {
           orderBy: {
             updatedAt: "desc",
           },
+          include: {
+            sender: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+                name: true,
+              },
+            },
+            receiver: {
+              select: {
+                id: true,
+                username: true,
+                image: true,
+                name: true,
+              },
+            },
+          },
         },
       },
     });
-    // .sort({ updatedAt: -1 })
-    // .populate({
-    //   path: "messages",
-    //   select: "msgType sender receiver data",
-    //   populate: {
-    //     path: "sender receiver",
-    //     model: "User",
-    //     select: "username _id",
-    //   },
-    // });
+
     if (!chat) {
       const error: IError = new Error("No Chats Exist.");
       error.statusCode = 404;
       next(error);
     }
 
-    res.status(200).json({ chat: chat });
+    res.status(200).json(chat);
   } catch (err) {
     console.log(err);
     next(err);
