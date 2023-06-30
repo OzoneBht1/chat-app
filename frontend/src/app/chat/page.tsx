@@ -8,11 +8,10 @@ import { socket } from "../socket/socket";
 import { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { getLatestMessages } from "../api/chat";
-import { ChatLatestMessage } from "@/types/chat";
+import { IChatLatestMessage } from "@/types/chat";
 
-let latestMessages: any;
 export default async function Chat() {
-  const [selectedChat, setSelectedChat] = useState<null | string>(null);
+  const [selectedChat, setSelectedChat] = useState<null | number>(null);
 
   const { auth } = useContext(AuthContext);
 
@@ -20,9 +19,9 @@ export default async function Chat() {
     data: latestMessages,
     isLoading: latestMessagesIsLoading,
     isError: latestMessagesIsError,
-  } = useQuery<{ history: ChatLatestMessage[] }>(
+  } = useQuery<IChatLatestMessage[]>(
     ["latest-message"],
-    () => getLatestMessages(auth?.user?.userId as string),
+    () => getLatestMessages(auth?.user?.userId as number),
     {
       refetchOnWindowFocus: false,
       enabled: auth?.user?.userId !== undefined,
@@ -33,8 +32,8 @@ export default async function Chat() {
     if (latestMessages) {
       console.log(latestMessages);
       let rooms: string[] = [];
-      latestMessages.history.map((chat: any) => {
-        rooms.push(chat._id);
+      latestMessages.map((chat) => {
+        rooms.push(chat.id.toString());
       });
 
       socket.emit("join-room", rooms);
@@ -47,7 +46,7 @@ export default async function Chat() {
 
   console.log(latestMessages);
 
-  const changeChatHandler = (chatId: string) => {
+  const changeChatHandler = (chatId: number) => {
     console.log(chatId);
     setSelectedChat(chatId);
   };

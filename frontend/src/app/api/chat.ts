@@ -2,12 +2,12 @@ import { IMessage, INewMessage } from "@/types/message";
 import api from "./api";
 import { IChat } from "@/types/chat";
 
-export const getChat = async (chatId: string): Promise<{ chat: IChat }> => {
+export const getChat = async (chatId: number) => {
   const response = await api.get(`/chats/chat/${chatId}`);
   return response.data;
 };
 
-export const getLatestMessages = async (userId: string) => {
+export const getLatestMessages = async (userId: number) => {
   const response = await api.get(`/messages/message/history/${userId}`);
   return response.data;
 };
