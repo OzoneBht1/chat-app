@@ -36,13 +36,15 @@ enum MsgType {
 }
 
 model Message {
-  id         Int     @id @default(autoincrement())
-  msgType    MsgType @default(TEXT)
+  id         Int      @id @default(autoincrement())
+  msgType    MsgType  @default(TEXT)
   data       String
-  chat       Chat    @relation(references: [id], name: "ChatToMessage", fields: [chatId])
+  chat       Chat     @relation(references: [id], name: "ChatToMessage", fields: [chatId])
   chatId     Int
-  sender     User    @relation(name: "SentMessage", fields: [senderId], references: [id])
+  sender     User     @relation(name: "SentMessage", fields: [senderId], references: [id])
   senderId   Int
-  receiver   User    @relation(name: "ReceivedMessage", fields: [receiverId], references: [id])
+  receiver   User     @relation(name: "ReceivedMessage", fields: [receiverId], references: [id])
   receiverId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
