@@ -33,10 +33,18 @@ export const getChatHistory: RequestHandler = async (req, res, next) => {
       where: {
         id: parseInt(chatId),
       },
-      include: {
+      select: {
         users: {
           select: {
             id: true,
+            username: true,
+            image: true,
+            name: true,
+          },
+        },
+        messages: {
+          orderBy: {
+            updatedAt: "desc",
           },
         },
       },

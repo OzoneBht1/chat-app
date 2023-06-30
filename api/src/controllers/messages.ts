@@ -76,34 +76,62 @@ export const createMessage: RequestHandler = async (req, res, next) => {
   }
 };
 
-// export const getLatestMessage: RequestHandler = async (req, res, next) => {
-//   const { userId } = req.params;
-//   if (!userId) {
-//     const error: IError = new Error("Invalid user Id");
-//     error.statusCode = 401;
-//     throw error;
-//   }
-//   try {
-//     const userChats = await Chat.find({
-//       $or: [{ user1: userId }, { user2: userId }],
-//     })
-//       .skip(0)
-//       .limit(4)
-//       .sort({ updatedAt: "desc" })
-//       .populate({
-//         path: "messages",
-//         select: "msgType sender data",
-//         perDocumentLimit: 1,
-//         populate: { path: "sender", model: "User", select: "username" },
-//         options: { sort: { createdAt: -1 } },
-//       });
-//     if (!userChats) {
-//       const error: IError = new Error("No Chats Exist.");
-//       error.statusCode = 404;
-//       throw error;
-//     }
-//     return res.status(200).json({ history: userChats });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+export const getLatestMessage: RequestHandler = async (req, res, next) => {
+  const { userId } = req.params;
+  if (!userId) {
+    const error: IError = new Error("Invalid user Id");
+    error.statusCode = 401;
+    throw error;
+  }
+  try {
+    const chats = await prisma.chat.findMany({
+      where: {
+        users: {
+          some: {
+            id: {
+              in: [Number(userId)],
+            },
+          },
+        },
+      },
+      skip: 0,
+      take: 4,
+      orderBy: {
+        updatedAt: "desc",
+      },
+
+      include: {
+        messages: {
+          take: 1,
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            sender: {
+              select: {
+                username: true,
+                id: true,
+              },
+            },
+
+            receiver: {
+              select: {
+                username: true,
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!chats) {
+      const error: IError = new Error("No Chats Exist.");
+      error.statusCode = 404;
+      throw error;
+    }
+    return res.status(200).json({ history: chats });
+  } catch (err) {
+    next(err);
+  }
+};
