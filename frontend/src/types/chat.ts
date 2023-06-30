@@ -1,4 +1,5 @@
-import { IMessage, LatestMessage } from "./message";
+import { IMessage } from "./message";
+import { User } from "./user";
 
 interface ITimestamps {
   createdAt: string;
@@ -6,12 +7,12 @@ interface ITimestamps {
 }
 
 export interface IChat extends ITimestamps {
-  _id: string;
-  user1: string;
-  user2: string;
+  id: number;
+  users: User[];
   messages: IMessage[];
 }
 
-export type ChatLatestMessage = Omit<IChat, "messages"> & {
-  messages: LatestMessage;
-};
+export interface IChatLatestMessage extends ITimestamps {
+  id: number;
+  messages: IMessage[];
+}

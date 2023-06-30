@@ -5,23 +5,25 @@ export enum MessageType {
 }
 
 export interface INewMessage {
-  userId: string;
+  userId: number;
   msgType: MessageType;
   data: string;
-  receiverId: string;
+  receiverId: number;
 }
 //
 
 export interface IUserInfo {
-  _id: string;
+  id: number;
   username: string;
 }
 
 export interface IMessage {
+  id: number;
   data: string;
   msgType: MessageType;
   receiver: IUserInfo;
   sender: IUserInfo;
+  chatId: string;
+  senderId: string;
+  receiverId: string;
 }
-
-export type LatestMessage = Omit<IMessage, "receiver">;

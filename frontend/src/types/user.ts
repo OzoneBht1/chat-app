@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 export interface IUser {
-  userId: string;
+  userId: number;
 }
 
 export interface IToken {
@@ -17,10 +17,10 @@ export type UserContextType = {
   setAuth: Dispatch<SetStateAction<IAuth>>;
 };
 export interface User {
-  _id: string;
+  id: number;
   username: string;
   name: string;
-  image: File;
+  image: string;
 }
 
 export interface IAuth {
