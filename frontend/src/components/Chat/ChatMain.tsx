@@ -32,21 +32,17 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
     data: chatData,
     isLoading: chatDataIsLoading,
     isError: chatDataIsError,
-  } = useQuery<IChat>(
-    ["getChat"],
-    () => getChat(selectedChat as number),
-    {
-      enabled: !!selectedChat,
-      refetchOnWindowFocus: false,
-      onSettled: (data , error: unknown) => {
-        console.log(data);
-        console.log("Calling Set Messages");
-        if (data){
+  } = useQuery<IChat>(["getChat"], () => getChat(selectedChat as number), {
+    enabled: !!selectedChat,
+    refetchOnWindowFocus: false,
+    onSettled: (data, error: unknown) => {
+      console.log(data);
+      console.log("Calling Set Messages");
+      if (data) {
         setMessages(data.messages);
-        }
-      },
-    }
-  );
+      }
+    },
+  });
 
   const {
     mutate: sendMessage,
@@ -89,27 +85,40 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
     console.log("HI< EMITTING");
     console.log("MESSAGE IS ", message);
 
+    const senderUser = chatData?.users.find(
+      (user) => user.id === auth?.user?.userId
+    );
+
+    const receiverUser = chatData?.users.find(
+      (user) => user.id !== auth?.user?.userId
+    );
+
     socket.emit("send-message", {
-      to: selectedChat,
+      to: selectedChat.toString(),
       msgType: "TEXT",
       data: message,
       sender: {
-        _id: auth?.user?.userId,
+        id: auth?.user?.userId,
+        image: senderUser?.image,
+        name: senderUser?.name,
+        username: senderUser?.username,
       },
       receiver: {
-        _id: selectedChat,
+        id: receiverUser?.id,
+        image: receiverUser?.image,
+        name: receiverUser?.name,
+        username: receiverUser?.username,
       },
     });
 
-      const receiverUser = chatData?.users.find((user)=>user.id !== auth?.user?.userId)
-    if (!receiverUser){
+    if (!receiverUser) {
       throw new Error();
     }
     sendMessage({
       userId: auth!.user!.userId,
       msgType: MessageType.TEXT,
       data: message,
-      receiverId : receiverUser?.id 
+      receiverId: receiverUser?.id,
     });
   };
 
@@ -143,7 +152,7 @@ export default function ChatMain({ selectedChat }: IChatMainProps) {
         <div className="flex-grow overflow-y-auto no-scrollbar">
           <div className="flex flex-col gap-5 w-full justify-end px-6 py-3">
             {messages.map((message, idx) => {
-              if (message.sender.id=== auth.user?.userId) {
+              if (message.sender.id === auth.user?.userId) {
                 return (
                   <>
                     <div key={message.id} className="flex justify-end pr-2">

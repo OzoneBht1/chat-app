@@ -14,6 +14,7 @@ export default async function Chat() {
   const [selectedChat, setSelectedChat] = useState<null | number>(null);
 
   const { auth } = useContext(AuthContext);
+  console.log(auth.user?.userId);
 
   const {
     data: latestMessages,
