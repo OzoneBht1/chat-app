@@ -45,7 +45,7 @@ export const getChatHistory: RequestHandler = async (req, res, next) => {
         },
         messages: {
           orderBy: {
-            updatedAt: "desc",
+            updatedAt: "asc",
           },
           include: {
             sender: {
